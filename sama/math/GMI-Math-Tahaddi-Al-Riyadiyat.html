@@ -807,7 +807,7 @@ const MASCOTS = {
 const MASCOT_NAMES = {pi:"باي π",sigma:"سيجما ∑",percent:"النسبة المئوية %",divide:"القسمة ÷",triangle:"مثلث",cube:"مكعب",compass:"فرجار",abacus:"معداد"};
 const mascotSVG = k => `<svg viewBox="0 0 40 40" aria-hidden="true">${MASCOTS[k] || MASCOTS.pi}</svg>`;
 const badge = t => `<span class="badge" style="background:${t.color}">${mascotSVG(t.mascot)}</span>`;
-// رموز شرائح العجلة (مربع ٤٠×٤٠، أبيض): رمز لكل وحدة من وحدات الرياضيات
+// رموز شرائح القرص (مربع ٤٠×٤٠، أبيض): رمز لكل وحدة من وحدات الرياضيات
 const WICON = {
   numline:'<g stroke="#fff" stroke-linecap="round" fill="none"><path d="M3 26h34" stroke-width="3"/><path d="M3 26l4-3M3 26l4 3M37 26l-4-3M37 26l-4 3" stroke-width="2.4"/><path d="M10 22v8M20 21v10M30 22v8" stroke-width="2.4"/><path d="M15 24v4M25 24v4" stroke-width="1.6"/><path d="M10 19q5-9 10 0" stroke-width="1.8" stroke-dasharray="2 2.5"/></g><path d="M4 9h7" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M29 9h8M33 5v8" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><circle cx="25" cy="26" r="3.2" fill="#fff"/><text direction="ltr" x="20" y="13" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="Arial">½</text>',
   algebra:'<g stroke="#fff" stroke-linecap="round" fill="none"><path d="M20 10v24M13 35h14" stroke-width="3"/><path d="M5 13h30" stroke-width="3"/><path d="M8 13l-4 12M8 13l4 12M32 13l-4 12M32 13l4 12" stroke-width="1.4"/></g><path d="M2 25h12a6 4 0 0 1-12 0zM26 25h12a6 4 0 0 1-12 0z" fill="#fff"/><circle cx="20" cy="9" r="2.6" fill="#fff"/><text direction="ltr" x="8" y="23" text-anchor="middle" font-size="11" font-style="italic" font-weight="700" fill="#fff" font-family="Georgia,serif">x</text><text direction="ltr" x="32" y="23" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="Arial">=5</text>',
@@ -1040,7 +1040,7 @@ function renderHome(){
     <div class="chalkeq en" dir="ltr" aria-hidden="true">${mtx("−3 + 5 = 2 · 3/4 > 1/2 · 180° · x² · π")}</div>
     <div class="heroart" aria-hidden="true">${[WICON.numline,WICON.algebra,WICON.stats,WICON.geometry,MASCOTS.pi].map((k,i)=>`<svg viewBox="0 0 40 40" style="background:${["#5b4bdb","#e63946","#22a35a","#0b6e8a","#ff8a1f"][i]};border-radius:16px;padding:8px">${k}</svg>`).join("")}</div>
     ${CREDIT}
-    <p class="lead">مسابقة رياضيات جماعية على السبورة: الأعداد والعمليات عليها، والجبر، والإحصاء، والهندسة والقياس. سجّلي الفرق، ولفّي عجلة الأرقام، وأجيبي قبل انتهاء الوقت. الإجابة الخاطئة تفتح فرصة سرقة للفرق الأخرى، وعمود كل فريق في الرسم البياني يرتفع مع نقاطه، والفريق صاحب أعلى عمود يصعد على منصة التتويج.</p>
+    <p class="lead">مسابقة رياضيات جماعية على السبورة: الأعداد والعمليات عليها، والجبر، والإحصاء، والهندسة والقياس. سجّلي الفرق، ولفّي قرص الأرقام، وأجيبي قبل انتهاء الوقت. الإجابة الخاطئة تفتح فرصة سرقة للفرق الأخرى، وعمود كل فريق في الرسم البياني يرتفع مع نقاطه، والفريق صاحب أعلى عمود يصعد على منصة التتويج.</p>
     ${m ? `<div class="resume"><div>مسابقة لم تكتمل: <b>${m.teams.map(t=>esc(t.name)).join(" ضد ")}</b> · الجولة ${AR(Math.min(m.turn+1,m.rounds))} من ${AR(m.rounds)}</div>
       <div class="row"><button class="btn small" data-act="continue">استكملي المسابقة</button><button class="iconbtn" data-act="abandon">إلغاؤها</button></div></div>` : ""}
     <div class="menu">
@@ -1155,7 +1155,7 @@ function memberOf(t){ return t.members.length ? t.members[t.mi % t.members.lengt
 function renderPlay(){
   const m = M(); if(!m) return go({screen:"home"});
   cancelAnimationFrame(timerRAF);
-  // سؤال محفوظ لم يعد موجودًا (تغيّرت الأسئلة): نعود إلى العجلة دون خسارة الدور
+  // سؤال محفوظ لم يعد موجودًا (تغيّرت الأسئلة): نعود إلى القرص دون خسارة الدور
   if(m.phase !== "spin" && !POOL[m.q]){ m.phase = "spin"; m.q = null; m.seg = null; m.wrong = []; m.stealer = null; m.result = null; m.paused = false; saveD(); }
   const t = m.teams[m.cur];
   let body = "";
@@ -1163,7 +1163,7 @@ function renderPlay(){
     body = `<div class="roundlbl">الجولة ${AR(m.turn+1)} من ${AR(m.rounds)}</div>
       <div class="who-turn" style="color:${t.color}">دور ${esc(t.name)}${memberOf(t) ? `<small>تجيب الآن: ${esc(memberOf(t))}</small>` : ""}</div>
       <div class="wheelwrap">${pointerSVG()}${wheelSVG(m.rot)}</div>
-      <button class="btn huge" data-act="spin" id="spinBtn">لفّي العجلة 🎡</button>`;
+      <button class="btn huge" data-act="spin" id="spinBtn">لفّي القرص 🎡</button>`;
   } else if(m.phase === "q" || m.phase === "steal-q"){
     const q = POOL[m.q], seg = SEGMENTS[m.seg], at = m.teams[activeTeam()];
     const opts = q.t === "tf" ? [{i:0,text:"True",ar:"صح"},{i:1,text:"False",ar:"خطأ"}] : q.opts.map((o,i)=>({i,text:o}));
@@ -1205,7 +1205,7 @@ function renderPlay(){
       <div class="adjust">${m.teams.map((t,i)=>`<div class="adj" style="--tc:${t.color}"><span>${mascotSVG(t.mascot)} ${esc(t.name)}</span>
         <button data-act="adj" data-i="${i}" data-d="-50" aria-label="خصم ٥٠ من ${esc(t.name)}">−٥٠</button><button data-act="adj" data-i="${i}" data-d="-10">−١٠</button>
         <button data-act="adj" data-i="${i}" data-d="10">+١٠</button><button data-act="adj" data-i="${i}" data-d="50" aria-label="إضافة ٥٠ إلى ${esc(t.name)}">+٥٠</button></div>`).join("")}</div>
-      <p class="tag">اختصارات: المسافة للفّ العجلة · ١ إلى ٤ للإجابات · P لإيقاف الوقت · U للتراجع</p>
+      <p class="tag">اختصارات: المسافة للفّ القرص · ١ إلى ٤ للإجابات · P لإيقاف الوقت · U للتراجع</p>
     </section>` + footer();
   growBars();
   if(qPhase && m.time && !m.paused) runTimer();
@@ -1242,7 +1242,7 @@ function wheelSVG(rot){
   const m = M(), n = SEGMENTS.length, R0 = 200;
   const seg = (i) => { const a0 = (i*360/n - 90 - 180/n)*Math.PI/180, a1 = ((i+1)*360/n - 90 - 180/n)*Math.PI/180;
     return `M200 200 L${200+R0*Math.cos(a0)} ${200+R0*Math.sin(a0)} A${R0} ${R0} 0 0 1 ${200+R0*Math.cos(a1)} ${200+R0*Math.sin(a1)}Z`; };
-  return `<svg class="wheel" id="wheel" viewBox="0 0 400 400" style="transform:rotate(${rot}deg)" role="img" aria-label="عجلة الحظ">
+  return `<svg class="wheel" id="wheel" viewBox="0 0 400 400" style="transform:rotate(${rot}deg)" role="img" aria-label="القرص الدوّار">
     <circle cx="200" cy="200" r="198" fill="#fff"/>
     ${SEGMENTS.map((s,i)=>{ const free = segFree(s, m), lbl = free ? "سؤال حر" : s.short, ic = free ? WICON.any : s.icon, fs = lbl.length > 9 ? 15 : 18;
       return `<path d="${seg(i)}" fill="${s.color}" stroke="#fff" stroke-width="3"${free ? ` opacity=".75"` : ""}/>
@@ -1262,7 +1262,7 @@ function spin(){
   const jitter = (Math.random()-.5)*(360/n)*0.6;
   m.rot += 360*6 + ((target - current + 360) % 360) + jitter;
   const w = document.getElementById("wheel"); if(w) w.style.transform = `rotate(${m.rot}deg)`;
-  // دقات تتباطأ مع العجلة
+  // دقات تتباطأ مع القرص
   let t = 0, gap = 50; const tick = () => { if(t > 4300) return; SND.tick(); t += gap; gap *= 1.09; setTimeout(tick, gap); }; if(!REDUCED) tick();
   setTimeout(() => { SND.spinEnd(); landOn(idx); }, REDUCED ? 300 : 4700);
 }

@@ -1,0 +1,22 @@
+{
+ "name": "ICT · سما",
+ "short_name": "ICT · سما",
+ "start_url": "./",
+ "display": "minimal-ui",
+ "dir": "rtl",
+ "lang": "ar",
+ "background_color": "#fff8ef",
+ "theme_color": "#2f80ed",
+ "icons": [
+  {
+   "src": "../../icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "../../icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

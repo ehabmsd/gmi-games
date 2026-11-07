@@ -786,7 +786,7 @@ const WICON = {
   any:'<circle cx="20" cy="20" r="16" fill="none" stroke="#fff" stroke-width="3.2"/><text direction="ltr" x="20" y="28.5" text-anchor="middle" font-size="24" font-weight="700" fill="#fff" font-family="Arial">?</text>',
   balloons:'<ellipse cx="14" cy="13" rx="8" ry="10" fill="#fff"/><ellipse cx="27" cy="16" rx="7" ry="9" fill="#fff" opacity=".85"/><path d="M14 23q-3 6 2 15M27 25q3 5-2 13" stroke="#fff" stroke-width="1.5" fill="none"/><ellipse cx="11" cy="9" rx="2" ry="3" fill="rgba(0,0,0,.12)"/>'
 };
-// عجلة الملاهي: ٣ شرائح للوحدات + شرائح مرح
+// القرص الدوّار: ٣ شرائح للوحدات + شرائح مرح
 const SEGMENTS = [
   {unit:0, color:"#ff5c8a"},
   {mult:2, label:"نجوم ×٢ (٢٠٠ نقطة)", short:"نجوم ×٢", icon:WICON.x2, color:"#ffb000"},
@@ -1084,7 +1084,7 @@ function renderHome(){
     <div class="subjline ${LTR ? "en" : ""}" ${LTR ? 'dir="ltr"' : ""} aria-hidden="true">${esc(HERO_LINE)}</div>
     <div class="heroart" aria-hidden="true">${[...UI_ICONS, ...EXTRA].map((k,i)=>`<svg viewBox="0 0 40 40" style="background:${["#ff5c8a","#3d8bff","#22b35a","#ffb000","#a259ff"][i%5]}">${k}</svg>`).join("")}</div>
     ${CREDIT}
-    <p class="lead">مسابقة الفصل الكبيرة! 🎈 قسّمي البنات إلى فرق (أرانب، فراشات، نجوم، ورود…)، ولفّي عجلة الملاهي، وكل فريق يجاوب على سؤال من الكتاب. كل إجابة صح تملأ برطمان الحلوى بتاع الفريق 🍬، ولو الإجابة مش صح يبقى فيه «فرصة لفريق آخر».</p>
+    <p class="lead">مسابقة الفصل الكبيرة! 🎈 قسّمي البنات إلى فرق (أرانب، فراشات، نجوم، ورود…)، ولفّي القرص الدوّار، وكل فريق يجاوب على سؤال من الكتاب. كل إجابة صح تملأ برطمان الحلوى بتاع الفريق 🍬، ولو الإجابة مش صح يبقى فيه «فرصة لفريق آخر».</p>
     ${m ? `<div class="resume"><div>مسابقة لم تكتمل: <b>${m.teams.map(t=>esc(t.name)).join(" · ")}</b> · الجولة ${AR(Math.min(m.turn+1,m.rounds))} من ${AR(m.rounds)}</div>
       <div class="row"><button class="btn small" data-act="continue">نكمّل المسابقة ▶</button><button class="iconbtn" data-act="abandon">إلغاؤها</button></div></div>` : ""}
     <div class="menu">
@@ -1198,7 +1198,7 @@ function answersHTML(q, m, onlyRight){
 function renderPlay(){
   const m = M(); if(!m) return go({screen:"home"});
   cancelAnimationFrame(timerRAF); stopSpeak();
-  // سؤال محفوظ لم يعد موجودًا (تغيّرت الأسئلة): نعود إلى العجلة دون خسارة الدور
+  // سؤال محفوظ لم يعد موجودًا (تغيّرت الأسئلة): نعود إلى القرص دون خسارة الدور
   if(m.phase !== "spin" && !POOL[m.q]){ m.phase = "spin"; m.q = null; m.seg = null; m.wrong = []; m.helper = null; m.result = null; m.paused = false; saveD(); }
   const t = m.teams[m.cur];
   let body = "";
@@ -1206,7 +1206,7 @@ function renderPlay(){
     body = `<div class="roundlbl">الجولة ${AR(m.turn+1)} من ${AR(m.rounds)}</div>
       <div class="who-turn" style="color:${t.color}">${badge(t)} دور ${esc(t.name)}${memberOf(t) ? `<small>تجاوب دلوقتي: <b>${esc(memberOf(t))}</b> 🙋‍♀️</small>` : ""}</div>
       <div class="wheelwrap">${standSVG()}${wheelSVG(m.rot)}${pointerSVG()}</div>
-      <button class="btn huge" data-act="spin" id="spinBtn">لفّي العجلة 🎡</button>`;
+      <button class="btn huge" data-act="spin" id="spinBtn">لفّي القرص 🎡</button>`;
   } else if(m.phase === "q" || m.phase === "chance-q"){
     const q = POOL[m.q], seg = SEGMENTS[m.seg], at = m.teams[activeTeam()];
     body = `${m.time ? `<div class="timer" id="tm"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#efeaff" stroke-width="11"/><circle id="tmc" cx="50" cy="50" r="44" fill="none" stroke="${at.color}" stroke-width="11" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="0"/></svg><b id="tmn"></b></div>` : ""}
@@ -1249,7 +1249,7 @@ function renderPlay(){
       <div class="adjust">${m.teams.map((t,i)=>`<div class="adj" style="--tc:${t.color}"><span>${mascotSVG(t.mascot)} ${esc(t.name)}</span>
         <button data-act="adj" data-i="${i}" data-d="-10" aria-label="خصم ١٠ من ${esc(t.name)}">−١٠</button>
         <button data-act="adj" data-i="${i}" data-d="10" aria-label="إضافة ١٠ إلى ${esc(t.name)}">+١٠</button><button data-act="adj" data-i="${i}" data-d="50" aria-label="إضافة ٥٠ إلى ${esc(t.name)}">+٥٠</button></div>`).join("")}</div>
-      <p class="tag">اختصارات: المسافة للفّ العجلة · ١ إلى ٤ للإجابات · P لإيقاف الوقت · U للتراجع</p>
+      <p class="tag">اختصارات: المسافة للفّ القرص · ١ إلى ٤ للإجابات · P لإيقاف الوقت · U للتراجع</p>
     </section>` + footer();
   if(qPhase && m.time && !m.paused) runTimer();
   else if(qPhase && m.time && m.paused) drawTimerStatic();
@@ -1281,14 +1281,14 @@ function drawTimerStatic(){
   if(c){ c.style.strokeDashoffset = String(276.5*(1 - m.pausedLeft/total)); n.textContent = AR(Math.ceil(m.pausedLeft/1000)); }
 }
 function pointerSVG(){ return `<svg class="pointer" viewBox="0 0 44 54" aria-hidden="true"><path d="M22 52L4 14a18 18 0 1 1 36 0z" fill="#ff5c8a" stroke="#fff" stroke-width="3.5"/><circle cx="22" cy="16" r="6.5" fill="#fff"/><circle cx="22" cy="16" r="3" fill="#ffc83d"/></svg>`; }
-// حامل عجلة الملاهي (لا يدور)
+// حامل القرص الدوّار (لا يدور)
 function standSVG(){ return `<svg class="stand" viewBox="0 0 400 448" aria-hidden="true"><path d="M200 200L110 430M200 200L290 430" stroke="#a259ff" stroke-width="16" stroke-linecap="round"/><path d="M150 330h100" stroke="#a259ff" stroke-width="10" stroke-linecap="round"/><rect x="70" y="424" width="260" height="20" rx="10" fill="#ff5c8a"/><path d="M80 434h240" stroke="#fff" stroke-width="3" stroke-dasharray="10 12" opacity=".7"/></svg>`; }
 function wheelSVG(rot){
   const m = M(), n = SEGMENTS.length, R0 = 178;
   const seg = (i) => { const a0 = (i*360/n - 90 - 180/n)*Math.PI/180, a1 = ((i+1)*360/n - 90 - 180/n)*Math.PI/180;
     return `M200 200 L${(200+R0*Math.cos(a0)).toFixed(2)} ${(200+R0*Math.sin(a0)).toFixed(2)} A${R0} ${R0} 0 0 1 ${(200+R0*Math.cos(a1)).toFixed(2)} ${(200+R0*Math.sin(a1)).toFixed(2)}Z`; };
   const bulbs = 28;
-  return `<svg class="wheel" id="wheel" viewBox="0 0 400 400" style="transform:rotate(${rot}deg)" role="img" aria-label="عجلة الملاهي">
+  return `<svg class="wheel" id="wheel" viewBox="0 0 400 400" style="transform:rotate(${rot}deg)" role="img" aria-label="القرص الدوّار">
     <circle cx="200" cy="200" r="199" fill="#ffc83d"/><circle cx="200" cy="200" r="186" fill="#ff8a1f"/><circle cx="200" cy="200" r="180" fill="#fff"/>
     ${SEGMENTS.map((s,i)=>{ const free = segFree(s, m), lbl = free ? "سؤال حر" : s.short, ic = free ? WICON.any : s.icon, fs = lbl.length > 10 ? 15 : 18;
       return `<path d="${seg(i)}" fill="${free ? "#ff8a1f" : s.color}" stroke="#fff" stroke-width="4"/>

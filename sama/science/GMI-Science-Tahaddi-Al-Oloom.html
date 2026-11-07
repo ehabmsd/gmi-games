@@ -684,7 +684,7 @@ const MASCOTS = {
 const MASCOT_NAMES = {atom:"ذرّة",magnet:"مغناطيس",cell:"خلية",planet:"كوكب",rocket:"صاروخ",flask:"دورق",microscope:"مجهر",leaf:"ورقة نبات"};
 const mascotSVG = k => `<svg viewBox="0 0 40 40" aria-hidden="true">${MASCOTS[k] || MASCOTS.atom}</svg>`;
 const badge = t => `<span class="badge" style="background:${t.color}">${mascotSVG(t.mascot)}</span>`;
-// رموز شرائح العجلة (مربع ٤٠×٤٠، أبيض)
+// رموز شرائح القرص (مربع ٤٠×٤٠، أبيض)
 const WICON = {
   orbit:'<circle cx="13" cy="20" r="8" fill="#fff"/><g stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 7v3M13 30v3M2 20h2M24 20h-1M5 12l2 2M5 28l2-2"/></g><circle cx="27" cy="18" r="5" fill="#fff" opacity=".85"/><circle cx="35" cy="11" r="2.4" fill="#fff" opacity=".7"/><path d="M19 28a14 14 0 0 0 18-6" fill="none" stroke="#fff" stroke-width="1.6" stroke-dasharray="2 3"/>',
   x2:'<path d="M13 4l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fff"/><path d="M27 15l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fff" opacity=".8"/>',
@@ -905,7 +905,7 @@ function renderHome(){
     <h1 class="showtitle">تحدي العلوم</h1>
     <div class="heroart" aria-hidden="true">${["atom","magnet","cell","planet","rocket"].map((k,i)=>`<svg viewBox="0 0 40 40" style="background:${["#5b4bdb","#e63946","#22a35a","#0b6e8a","#ff8a1f"][i]};border-radius:16px;padding:8px">${MASCOTS[k]}</svg>`).join("")}</div>
     ${CREDIT}
-    <p class="lead">مسابقة علوم جماعية على السبورة: المادة، ومجالات القوى، والكائنات الحية، ونظام الأرض والشمس والقمر. سجّلي الفرق، ولفّي عجلة المختبر، وأجيبي قبل انتهاء الوقت. الإجابة الخاطئة تفتح فرصة سرقة فضائية للفرق الأخرى، والفريق الذي يملأ دورقه بأعلى نقاط يصعد على منصة التتويج.</p>
+    <p class="lead">مسابقة علوم جماعية على السبورة: المادة، ومجالات القوى، والكائنات الحية، ونظام الأرض والشمس والقمر. سجّلي الفرق، ولفّي قرص المختبر، وأجيبي قبل انتهاء الوقت. الإجابة الخاطئة تفتح فرصة سرقة فضائية للفرق الأخرى، والفريق الذي يملأ دورقه بأعلى نقاط يصعد على منصة التتويج.</p>
     ${m ? `<div class="resume"><div>مسابقة لم تكتمل: <b>${m.teams.map(t=>esc(t.name)).join(" ضد ")}</b> · الجولة ${AR(Math.min(m.turn+1,m.rounds))} من ${AR(m.rounds)}</div>
       <div class="row"><button class="btn small" data-act="continue">استكملي المسابقة</button><button class="iconbtn" data-act="abandon">إلغاؤها</button></div></div>` : ""}
     <div class="menu">
@@ -1019,7 +1019,7 @@ function memberOf(t){ return t.members.length ? t.members[t.mi % t.members.lengt
 function renderPlay(){
   const m = M(); if(!m) return go({screen:"home"});
   cancelAnimationFrame(timerRAF);
-  // سؤال محفوظ لم يعد موجودًا (تغيّرت الأسئلة): نعود إلى العجلة دون خسارة الدور
+  // سؤال محفوظ لم يعد موجودًا (تغيّرت الأسئلة): نعود إلى القرص دون خسارة الدور
   if(m.phase !== "spin" && !POOL[m.q]){ m.phase = "spin"; m.q = null; m.seg = null; m.wrong = []; m.stealer = null; m.result = null; m.paused = false; saveD(); }
   const t = m.teams[m.cur];
   let body = "";
@@ -1027,7 +1027,7 @@ function renderPlay(){
     body = `<div class="roundlbl">الجولة ${AR(m.turn+1)} من ${AR(m.rounds)}</div>
       <div class="who-turn" style="color:${t.color}">دور ${esc(t.name)}${memberOf(t) ? `<small>تجيب الآن: ${esc(memberOf(t))}</small>` : ""}</div>
       <div class="wheelwrap">${pointerSVG()}${wheelSVG(m.rot)}</div>
-      <button class="btn huge" data-act="spin" id="spinBtn">لفّي العجلة 🎡</button>`;
+      <button class="btn huge" data-act="spin" id="spinBtn">لفّي القرص 🎡</button>`;
   } else if(m.phase === "q" || m.phase === "steal-q"){
     const q = POOL[m.q], seg = SEGMENTS[m.seg], at = m.teams[activeTeam()];
     const opts = q.t === "tf" ? [{i:0,text:"True",ar:"صح"},{i:1,text:"False",ar:"خطأ"}] : q.opts.map((o,i)=>({i,text:o}));
@@ -1069,7 +1069,7 @@ function renderPlay(){
       <div class="adjust">${m.teams.map((t,i)=>`<div class="adj" style="--tc:${t.color}"><span>${mascotSVG(t.mascot)} ${esc(t.name)}</span>
         <button data-act="adj" data-i="${i}" data-d="-50" aria-label="خصم ٥٠ من ${esc(t.name)}">−٥٠</button><button data-act="adj" data-i="${i}" data-d="-10">−١٠</button>
         <button data-act="adj" data-i="${i}" data-d="10">+١٠</button><button data-act="adj" data-i="${i}" data-d="50" aria-label="إضافة ٥٠ إلى ${esc(t.name)}">+٥٠</button></div>`).join("")}</div>
-      <p class="tag">اختصارات: المسافة للفّ العجلة · ١ إلى ٤ للإجابات · P لإيقاف الوقت · U للتراجع</p>
+      <p class="tag">اختصارات: المسافة للفّ القرص · ١ إلى ٤ للإجابات · P لإيقاف الوقت · U للتراجع</p>
     </section>` + footer();
   fillBeakers();
   if(qPhase && m.time && !m.paused) runTimer();
@@ -1106,7 +1106,7 @@ function wheelSVG(rot){
   const m = M(), n = SEGMENTS.length, R0 = 200;
   const seg = (i) => { const a0 = (i*360/n - 90 - 180/n)*Math.PI/180, a1 = ((i+1)*360/n - 90 - 180/n)*Math.PI/180;
     return `M200 200 L${200+R0*Math.cos(a0)} ${200+R0*Math.sin(a0)} A${R0} ${R0} 0 0 1 ${200+R0*Math.cos(a1)} ${200+R0*Math.sin(a1)}Z`; };
-  return `<svg class="wheel" id="wheel" viewBox="0 0 400 400" style="transform:rotate(${rot}deg)" role="img" aria-label="عجلة الحظ">
+  return `<svg class="wheel" id="wheel" viewBox="0 0 400 400" style="transform:rotate(${rot}deg)" role="img" aria-label="القرص الدوّار">
     <circle cx="200" cy="200" r="198" fill="#fff"/>
     ${SEGMENTS.map((s,i)=>{ const free = segFree(s, m), lbl = free ? "سؤال حر" : s.short, ic = free ? WICON.any : s.icon, fs = lbl.length > 9 ? 15 : 18;
       return `<path d="${seg(i)}" fill="${s.color}" stroke="#fff" stroke-width="3"${free ? ` opacity=".75"` : ""}/>
@@ -1126,7 +1126,7 @@ function spin(){
   const jitter = (Math.random()-.5)*(360/n)*0.6;
   m.rot += 360*6 + ((target - current + 360) % 360) + jitter;
   const w = document.getElementById("wheel"); if(w) w.style.transform = `rotate(${m.rot}deg)`;
-  // دقات تتباطأ مع العجلة
+  // دقات تتباطأ مع القرص
   let t = 0, gap = 50; const tick = () => { if(t > 4300) return; SND.tick(); t += gap; gap *= 1.09; setTimeout(tick, gap); }; if(!REDUCED) tick();
   setTimeout(() => { SND.spinEnd(); landOn(idx); }, REDUCED ? 300 : 4700);
 }
